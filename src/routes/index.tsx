@@ -166,14 +166,13 @@ function Index() {
 
       <section className="mx-auto mt-24 grid max-w-6xl gap-4 px-4 sm:px-6 md:grid-cols-3">
         {[
-          { img: copenhagen, title: "Copenhagen from above", to: "/cities/$slug" as const, slug: "copenhagen" },
+          { img: copenhagen, title: "Six cities to visit", to: "/cities" as const },
           { img: people, title: "Meet the Danes", to: "/people" as const },
           { img: roskilde, title: "1,000 years of history", to: "/history" as const },
         ].map((card) => (
           <Link
             key={card.title}
             to={card.to}
-            params={card.slug ? { slug: card.slug } : undefined}
             className="group relative block aspect-[4/5] overflow-hidden rounded-2xl"
           >
             <img
