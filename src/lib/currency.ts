@@ -59,7 +59,7 @@ export function invertDkkBaseRates(perDkk: Record<string, number>): Record<strin
   for (const [code, rate] of Object.entries(perDkk)) {
     if (rate > 0) out[code] = 1 / rate;
   }
-  out.DKK = 1;
+  out["DKK"] = 1;
   return out;
 }
 

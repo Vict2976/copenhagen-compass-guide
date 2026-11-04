@@ -21,7 +21,7 @@ describe("currency calculator", () => {
 
   it("inverts DKK-based API rates into DKK per unit", () => {
     const rates = invertDkkBaseRates({ DKK: 1, EUR: 0.134 });
-    expect(rates.EUR).toBeCloseTo(7.4627, 3);
-    expect(rates.DKK).toBe(1);
+    expect(rates["EUR"]).toBeCloseTo(7.4627, 3);
+    expect(rates["DKK"]).toBe(1);
   });
 });
