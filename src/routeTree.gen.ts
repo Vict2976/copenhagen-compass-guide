@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CurrencyRouteImport } from './routes/currency'
 import { Route as VisaRouteImport } from './routes/visa'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CurrencyRoute = CurrencyRouteImport.update({
+  id: '/currency',
+  path: '/currency',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VisaRoute = VisaRouteImport.update({
@@ -25,27 +31,31 @@ const VisaRoute = VisaRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/currency': typeof CurrencyRoute
   '/visa': typeof VisaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/currency': typeof CurrencyRoute
   '/visa': typeof VisaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/currency': typeof CurrencyRoute
   '/visa': typeof VisaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/visa'
+  fullPaths: '/' | '/currency' | '/visa'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/visa'
-  id: '__root__' | '/' | '/visa'
+  to: '/' | '/currency' | '/visa'
+  id: '__root__' | '/' | '/currency' | '/visa'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CurrencyRoute: typeof CurrencyRoute
   VisaRoute: typeof VisaRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/currency': {
+      id: '/currency'
+      path: '/currency'
+      fullPath: '/currency'
+      preLoaderRoute: typeof CurrencyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/visa': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CurrencyRoute: CurrencyRoute,
   VisaRoute: VisaRoute,
 }
 export const routeTree = rootRouteImport
