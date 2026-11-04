@@ -11,7 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CurrencyRouteImport } from './routes/currency'
+import { Route as HistoryRouteImport } from './routes/history'
+import { Route as PeopleRouteImport } from './routes/people'
 import { Route as VisaRouteImport } from './routes/visa'
+import { Route as CitiesIndexRouteImport } from './routes/cities.index'
+import { Route as CitiesSlugRouteImport } from './routes/cities.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -23,40 +27,98 @@ const CurrencyRoute = CurrencyRouteImport.update({
   path: '/currency',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HistoryRoute = HistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PeopleRoute = PeopleRouteImport.update({
+  id: '/people',
+  path: '/people',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VisaRoute = VisaRouteImport.update({
   id: '/visa',
   path: '/visa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CitiesIndexRoute = CitiesIndexRouteImport.update({
+  id: '/cities/',
+  path: '/cities/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CitiesSlugRoute = CitiesSlugRouteImport.update({
+  id: '/cities/$slug',
+  path: '/cities/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/currency': typeof CurrencyRoute
+  '/history': typeof HistoryRoute
+  '/people': typeof PeopleRoute
   '/visa': typeof VisaRoute
+  '/cities/$slug': typeof CitiesSlugRoute
+  '/cities/': typeof CitiesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/currency': typeof CurrencyRoute
+  '/history': typeof HistoryRoute
+  '/people': typeof PeopleRoute
   '/visa': typeof VisaRoute
+  '/cities/$slug': typeof CitiesSlugRoute
+  '/cities': typeof CitiesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/currency': typeof CurrencyRoute
+  '/history': typeof HistoryRoute
+  '/people': typeof PeopleRoute
   '/visa': typeof VisaRoute
+  '/cities/$slug': typeof CitiesSlugRoute
+  '/cities/': typeof CitiesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/currency' | '/visa'
+  fullPaths:
+    | '/'
+    | '/currency'
+    | '/history'
+    | '/people'
+    | '/visa'
+    | '/cities/$slug'
+    | '/cities/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/currency' | '/visa'
-  id: '__root__' | '/' | '/currency' | '/visa'
+  to:
+    | '/'
+    | '/currency'
+    | '/history'
+    | '/people'
+    | '/visa'
+    | '/cities/$slug'
+    | '/cities'
+  id:
+    | '__root__'
+    | '/'
+    | '/currency'
+    | '/history'
+    | '/people'
+    | '/visa'
+    | '/cities/$slug'
+    | '/cities/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CurrencyRoute: typeof CurrencyRoute
+  HistoryRoute: typeof HistoryRoute
+  PeopleRoute: typeof PeopleRoute
   VisaRoute: typeof VisaRoute
+  CitiesSlugRoute: typeof CitiesSlugRoute
+  CitiesIndexRoute: typeof CitiesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -75,11 +137,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CurrencyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/history': {
+      id: '/history'
+      path: '/history'
+      fullPath: '/history'
+      preLoaderRoute: typeof HistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/people': {
+      id: '/people'
+      path: '/people'
+      fullPath: '/people'
+      preLoaderRoute: typeof PeopleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/visa': {
       id: '/visa'
       path: '/visa'
       fullPath: '/visa'
       preLoaderRoute: typeof VisaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cities/': {
+      id: '/cities/'
+      path: '/cities'
+      fullPath: '/cities/'
+      preLoaderRoute: typeof CitiesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cities/$slug': {
+      id: '/cities/$slug'
+      path: '/cities/$slug'
+      fullPath: '/cities/$slug'
+      preLoaderRoute: typeof CitiesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -88,7 +178,11 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CurrencyRoute: CurrencyRoute,
+  HistoryRoute: HistoryRoute,
+  PeopleRoute: PeopleRoute,
   VisaRoute: VisaRoute,
+  CitiesSlugRoute: CitiesSlugRoute,
+  CitiesIndexRoute: CitiesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
