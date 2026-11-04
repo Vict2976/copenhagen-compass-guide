@@ -162,7 +162,7 @@
     pointer-events: none;
   }
   &::before {
-    left: 0;
+    left: 58%;
     right: 0;
     top: 42%;
     height: 14%;
@@ -170,8 +170,8 @@
   &::after {
     top: 0;
     bottom: 0;
-    left: 32%;
-    width: 11%;
+    left: 70%;
+    width: 9%;
   }
 }
 
