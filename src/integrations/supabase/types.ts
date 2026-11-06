@@ -20,6 +20,7 @@ export type Database = {
           created_at: string
           id: string
           role: string
+          sources: Json
           user_id: string
         }
         Insert: {
@@ -27,6 +28,7 @@ export type Database = {
           created_at?: string
           id?: string
           role: string
+          sources?: Json
           user_id: string
         }
         Update: {
@@ -34,6 +36,37 @@ export type Database = {
           created_at?: string
           id?: string
           role?: string
+          sources?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      trips: {
+        Row: {
+          created_at: string
+          id: string
+          plan: Json
+          request: Json
+          sources: Json
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          plan: Json
+          request: Json
+          sources?: Json
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          plan?: Json
+          request?: Json
+          sources?: Json
+          title?: string
           user_id?: string
         }
         Relationships: []

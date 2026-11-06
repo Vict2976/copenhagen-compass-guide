@@ -17,6 +17,7 @@ import { Route as HistoryRouteImport } from './routes/history'
 import { Route as PeopleRouteImport } from './routes/people'
 import { Route as VisaRouteImport } from './routes/visa'
 import { Route as AuthenticatedChatRouteImport } from './routes/_authenticated/chat'
+import { Route as AuthenticatedPlannerRouteImport } from './routes/_authenticated/planner'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as CitiesIndexRouteImport } from './routes/cities.index'
 import { Route as CitiesSlugRouteImport } from './routes/cities.$slug'
@@ -60,6 +61,11 @@ const AuthenticatedChatRoute = AuthenticatedChatRouteImport.update({
   path: '/chat',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPlannerRoute = AuthenticatedPlannerRouteImport.update({
+  id: '/planner',
+  path: '/planner',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
   path: '/api/chat',
@@ -84,6 +90,7 @@ export interface FileRoutesByFullPath {
   '/people': typeof PeopleRoute
   '/visa': typeof VisaRoute
   '/chat': typeof AuthenticatedChatRoute
+  '/planner': typeof AuthenticatedPlannerRoute
   '/api/chat': typeof ApiChatRoute
   '/cities/$slug': typeof CitiesSlugRoute
   '/cities/': typeof CitiesIndexRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/people': typeof PeopleRoute
   '/visa': typeof VisaRoute
   '/chat': typeof AuthenticatedChatRoute
+  '/planner': typeof AuthenticatedPlannerRoute
   '/api/chat': typeof ApiChatRoute
   '/cities/$slug': typeof CitiesSlugRoute
   '/cities': typeof CitiesIndexRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/people': typeof PeopleRoute
   '/visa': typeof VisaRoute
   '/_authenticated/chat': typeof AuthenticatedChatRoute
+  '/_authenticated/planner': typeof AuthenticatedPlannerRoute
   '/api/chat': typeof ApiChatRoute
   '/cities/$slug': typeof CitiesSlugRoute
   '/cities/': typeof CitiesIndexRoute
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
     | '/people'
     | '/visa'
     | '/chat'
+    | '/planner'
     | '/api/chat'
     | '/cities/$slug'
     | '/cities/'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
     | '/people'
     | '/visa'
     | '/chat'
+    | '/planner'
     | '/api/chat'
     | '/cities/$slug'
     | '/cities'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/people'
     | '/visa'
     | '/_authenticated/chat'
+    | '/_authenticated/planner'
     | '/api/chat'
     | '/cities/$slug'
     | '/cities/'
@@ -225,6 +237,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedChatRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/planner': {
+      id: '/_authenticated/planner'
+      path: '/planner'
+      fullPath: '/planner'
+      preLoaderRoute: typeof AuthenticatedPlannerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/chat': {
       id: '/api/chat'
       path: '/api/chat'
@@ -251,10 +270,12 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedChatRoute: typeof AuthenticatedChatRoute
+  AuthenticatedPlannerRoute: typeof AuthenticatedPlannerRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedChatRoute: AuthenticatedChatRoute,
+  AuthenticatedPlannerRoute: AuthenticatedPlannerRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

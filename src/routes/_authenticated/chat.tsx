@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ChatStatus } from "ai";
-import { RotateCcw } from "lucide-react";
+import { BookOpen, RotateCcw } from "lucide-react";
+import type { Source } from "@/lib/knowledge";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Conversation,
@@ -39,6 +40,7 @@ interface ChatMessage {
   id: string;
   role: "user" | "assistant";
   content: string;
+  sources?: Source[];
 }
 
 const suggestions = [
@@ -68,7 +70,7 @@ function ChatPage() {
     let cancelled = false;
     void supabase
       .from("chat_messages")
-      .select("id, role, content")
+      .select("id, role, content, sources")
       .order("created_at", { ascending: true })
       .then(({ data, error: err }) => {
         if (cancelled) return;
@@ -78,6 +80,7 @@ function ChatPage() {
             id: m.id,
             role: m.role === "assistant" ? "assistant" : "user",
             content: m.content,
+            sources: Array.isArray(m.sources) ? (m.sources as unknown as Source[]) : [],
           })),
         );
         setLoaded(true);
@@ -121,7 +124,13 @@ function ChatPage() {
           throw new Error(body?.error ?? "The guide couldn't answer right now. Please try again.");
         }
 
-        setMessages((prev) => [...prev, { id: assistantId, role: "assistant", content: "" }]);
+        let sources: Source[] = [];
+        try {
+          sources = JSON.parse(decodeURIComponent(res.headers.get("x-sources") ?? "%5B%5D")) as Source[];
+        } catch {
+          sources = [];
+        }
+        setMessages((prev) => [...prev, { id: assistantId, role: "assistant", content: "", sources }]);
         setStatus("streaming");
 
         const reader = res.body.getReader();
@@ -229,6 +238,20 @@ function ChatPage() {
                     <p className="whitespace-pre-wrap">{m.content}</p>
                   )}
                 </MessageContent>
+                {m.role === "assistant" && m.content && m.sources && m.sources.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                    <BookOpen className="size-3.5" /> Sources:
+                    {m.sources.map((src) => (
+                      <a
+                        key={src.url}
+                        href={src.url}
+                        className="rounded-full border border-border bg-card px-2.5 py-1 font-medium text-foreground hover:border-primary/50 hover:text-primary"
+                      >
+                        {src.title}
+                      </a>
+                    ))}
+                  </div>
+                )}
               </Message>
             ))
           )}

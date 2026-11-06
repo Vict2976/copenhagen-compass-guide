@@ -13,6 +13,7 @@ const nav = [
   { to: "/cities", label: "Cities" },
   { to: "/people", label: "People" },
   { to: "/history", label: "History" },
+  { to: "/planner", label: "Trip planner" },
 ] as const;
 
 export function SiteHeader() {

@@ -1,14 +1,16 @@
 import { createClient } from "@supabase/supabase-js";
 import { GatewayError, streamResponse } from "@lovable.dev/ai-gateway";
 import { z } from "zod";
-import type { Database } from "@/integrations/supabase/types";
+import type { Database, Json } from "@/integrations/supabase/types";
+import { formatContext, retrieve } from "@/lib/rag.server";
+import { toSources } from "@/lib/knowledge";
 
 const MODEL = "openai/gpt-6-astra" as const;
 const HISTORY_LIMIT = 40;
 
 const bodySchema = z.object({ message: z.string().trim().min(1).max(4000) });
 
-function systemPrompt() {
+function systemPrompt(context: string) {
   const today = new Date().toISOString().slice(0, 10);
   return `You are "Hej Guide", a warm, knowledgeable local travel guide for visitors to Copenhagen and Denmark. Today's date is ${today}.
 
@@ -19,7 +21,13 @@ Guidelines:
 - Give concrete suggestions: names of places, neighbourhoods, approximate prices in DKK, travel times.
 - For visa, legal, health or safety questions, give your best general answer and remind them to confirm on official sources (e.g. nyidanmark.dk, travel-europe.europa.eu). In an emergency, tell them to call 112.
 - If you're not sure about something (opening hours, current prices, events), say so and suggest how to check.
-- If a question has nothing to do with travel, Denmark or the user's trip, answer briefly and gently steer back to helping with their visit.`;
+- If a question has nothing to do with travel, Denmark or the user's trip, answer briefly and gently steer back to helping with their visit.
+- Think step by step about what the traveller actually needs (dates, nationality, budget, interests). If a key detail is missing and it changes the answer, ask one short follow-up question.
+
+Site knowledge (retrieved from the Hej Copenhagen pages for this question):
+${context}
+
+Prefer this site knowledge when it answers the question and stay consistent with it. When you use it, mention the page naturally (e.g. "see our Visa page"). Don't invent links; the app shows source links under your answer.`;
 }
 
 function createUserClient(token: string) {
@@ -80,6 +88,10 @@ export async function handleChatRequest(request: Request): Promise<Response> {
     return Response.json({ error: "Could not save your message." }, { status: 500 });
   }
 
+  const lastUser = [...history].reverse().find((m) => m.role === "user")?.content ?? "";
+  const chunks = await retrieve(`${message}\n${lastUser.slice(0, 300)}`);
+  const sources = toSources(chunks);
+
   const input = [
     ...history.map((m) => ({
       role: m.role === "assistant" ? ("assistant" as const) : ("user" as const),
@@ -91,7 +103,7 @@ export async function handleChatRequest(request: Request): Promise<Response> {
   let stream: Awaited<ReturnType<typeof streamResponse<typeof MODEL>>>;
   try {
     stream = await streamResponse(
-      { model: MODEL, instructions: systemPrompt(), input },
+      { model: MODEL, instructions: systemPrompt(formatContext(chunks)), input },
       { signal: request.signal },
     );
   } catch (err) {
@@ -112,13 +124,13 @@ export async function handleChatRequest(request: Request): Promise<Response> {
         if (full.trim()) {
           const { error } = await supabase
             .from("chat_messages")
-            .insert({ user_id: userId, role: "assistant", content: full });
+            .insert({ user_id: userId, role: "assistant", content: full, sources: sources as unknown as Json });
           if (error) console.error("chat assistant message save failed", error);
         }
       } catch (err) {
         console.error("chat stream failed", err);
         if (full.trim()) {
-          await supabase.from("chat_messages").insert({ user_id: userId, role: "assistant", content: full });
+          await supabase.from("chat_messages").insert({ user_id: userId, role: "assistant", content: full, sources: sources as unknown as Json });
         }
         controller.enqueue(encoder.encode("\n\n[[ERROR]]"));
       } finally {
@@ -128,7 +140,11 @@ export async function handleChatRequest(request: Request): Promise<Response> {
   });
 
   return new Response(body, {
-    headers: { "content-type": "text/plain; charset=utf-8", "cache-control": "no-cache" },
+    headers: {
+      "content-type": "text/plain; charset=utf-8",
+      "cache-control": "no-cache",
+      "x-sources": encodeURIComponent(JSON.stringify(sources)),
+    },
   });
 }
 
