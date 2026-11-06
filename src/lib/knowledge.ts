@@ -113,9 +113,10 @@ export function keywordScores(query: string, chunks: KnowledgeChunk[] = knowledg
 export function cosine(a: number[], b: number[]): number {
   let dot = 0, na = 0, nb = 0;
   for (let i = 0; i < a.length; i++) {
-    dot += a[i] * b[i];
-    na += a[i] * a[i];
-    nb += b[i] * b[i];
+    const x = a[i] ?? 0, y = b[i] ?? 0;
+    dot += x * y;
+    na += x * x;
+    nb += y * y;
   }
   return na && nb ? dot / Math.sqrt(na * nb) : 0;
 }
@@ -128,6 +129,6 @@ export interface Source {
 // Unique page links for a set of chunks, in rank order.
 export function toSources(chunks: KnowledgeChunk[]): Source[] {
   const seen = new Map<string, Source>();
-  for (const c of chunks) if (!seen.has(c.url)) seen.set(c.url, { title: c.title.split(":")[0], url: c.url });
+  for (const c of chunks) if (!seen.has(c.url)) seen.set(c.url, { title: c.title.split(":")[0] ?? c.title, url: c.url });
   return [...seen.values()];
 }

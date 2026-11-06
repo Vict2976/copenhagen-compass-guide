@@ -75,7 +75,10 @@ function PlannerPage() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (form.cities.length === 0) return toast.error("Pick at least one city.");
+    if (form.cities.length === 0) {
+      toast.error("Pick at least one city.");
+      return;
+    }
     setBusy(true);
     try {
       const { id } = await planFn({ data: form });
@@ -90,7 +93,10 @@ function PlannerPage() {
 
   async function remove(id: string) {
     const { error } = await supabase.from("trips").delete().eq("id", id);
-    if (error) return toast.error("Couldn't delete that trip.");
+    if (error) {
+      toast.error("Couldn't delete that trip.");
+      return;
+    }
     await load();
   }
 

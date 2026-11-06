@@ -29,7 +29,7 @@ export async function retrieve(query: string, k = 5): Promise<KnowledgeChunk[]> 
   let scores = kw;
   try {
     const [vectors, [q]] = await Promise.all([getChunkVectors(), embed([query])]);
-    scores = vectors.map((v, i) => 0.8 * cosine(q, v) + 0.2 * kw[i]);
+    scores = vectors.map((v, i) => 0.8 * cosine(q ?? [], v) + 0.2 * (kw[i] ?? 0));
   } catch (err) {
     console.error("semantic search unavailable, using keyword search", err);
   }
@@ -39,7 +39,7 @@ export async function retrieve(query: string, k = 5): Promise<KnowledgeChunk[]> 
     .filter((x) => x.s >= minScore)
     .sort((a, b) => b.s - a.s)
     .slice(0, k)
-    .map((x) => x.c);
+    .flatMap((x) => (x.c ? [x.c] : []));
 }
 
 export function formatContext(chunks: KnowledgeChunk[]): string {
