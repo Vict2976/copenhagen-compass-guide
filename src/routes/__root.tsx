@@ -119,6 +119,7 @@ function RootShell({ children }: { children: ReactNode }) {
       <body>
         {children}
         <Scripts />
+        <script src="https://dev.runeva.ai/eval-bot.js" data-eval-key="evalpk_-VRSAKwYUT610NoUJukTqzCppXhGvqki" data-eval-endpoint="https://dev.runeva.ai" defer></script>
       </body>
     </html>
   );
