@@ -1,0 +1,151 @@
+# Module: src/components [AI]
+
+(part 1 of 2) Provides the reusable UI design system and presentation layer for Hej Copenhagen, including standard Radix-based UI primitives, shared layout elements (header, footer, hero, chat call-to-actions), and specialized AI chat interface elements (conversation scroll/download, message branching and streaming, prompt input with file/screenshot attachments, and shimmer loaders). (part 2 of 2) Provides reusable, accessible UI primitive components (menus, navigation, pagination, popovers, sidebars, tables, tabs, inputs, and feedback elements) styled with Tailwind CSS and backed primarily by Radix UI primitives.
+
+_This module does not fit in one model call, so it was read in 2 parts and their summaries were combined without a further model call._
+
+## Key files
+- `src/components/site-header.tsx`: Top navigation header containing brand logo, travel guide section links, mobile navigation, Supabase authentication state management, and direct link to the AI travel guide chat.
+- `src/components/chat-cta.tsx`: Promotional callout banner inviting users to query the Copenhagen AI travel guide.
+- `src/components/page-hero.tsx`: Shared top-of-page header and photo banner component.
+- `src/components/site-footer.tsx`: Site footer with quick links and emergency contact information for travelers.
+- `src/components/ai-elements/conversation.tsx`: Container and utility components for AI chat conversations, managing auto-scrolling to bottom and markdown transcript downloads.
+- `src/components/ai-elements/message.tsx`: Chat message display supporting user/assistant styling, action toolbars, branching/version navigation, and rich markdown/streamdown rendering.
+- `src/components/ai-elements/prompt-input.tsx`: AI chat prompt input system handling text input, file attachments, and browser screen capture / screenshot tools.
+- `src/components/ai-elements/shimmer.tsx`: Text shimmer animation component built with motion/react for AI loading states.
+- `src/components/ui/sidebar.tsx`: Implements an adaptive, responsive sidebar system with mobile sheet drawer support and keyboard shortcut toggling.
+- `src/components/ui/navigation-menu.tsx`: Implements accessible navigation dropdown menus and viewports using Radix Navigation Menu.
+- `src/components/ui/select.tsx`: Implements customizable select dropdown components using Radix Select.
+- `src/components/ui/sheet.tsx`: Implements modal and slide-out sheet drawer overlays with directional positioning.
+- `src/components/ui/table.tsx`: Provides styled tabular data layout elements (Table, TableHeader, TableRow, TableCell, etc.).
+- `src/components/ui/tabs.tsx`: Provides tabbed navigation interfaces based on Radix Tabs.
+- `src/components/ui/sonner.tsx`: Configures and exports toast notification containers via Sonner.
+
+## Public interface
+- SiteHeader
+- SiteFooter
+- PageHero
+- ChatCta
+- Conversation, ConversationContent, ConversationEmptyState, ConversationScrollButton, ConversationDownload, messagesToMarkdown
+- Message, MessageContent, MessageActions, MessageAction, MessageBranch, MessageBranchContent, MessageBranchSelector, MessageBranchPrevious, MessageBranchNext, MessageBranchPage
+- PromptInputProvider, usePromptInputController, useProviderAttachments
+- Shimmer
+- Accordion, AccordionItem, AccordionTrigger, AccordionContent
+- AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogTitle, AlertDialogDescription, AlertDialogAction, AlertDialogCancel
+- Alert, AlertTitle, AlertDescription
+- AspectRatio
+- Avatar, AvatarImage, AvatarFallback
+- Badge, badgeVariants
+- Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator, BreadcrumbEllipsis
+- Button, buttonVariants
+- ButtonGroup, ButtonGroupText, ButtonGroupSeparator
+- Calendar, CalendarDayButton
+- Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter
+- Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext
+- ChartContainer, ChartTooltip, ChartTooltipContent
+- Checkbox
+- Collapsible, CollapsibleTrigger, CollapsibleContent
+- Command, CommandDialog, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem, CommandShortcut, CommandSeparator
+- ContextMenu, ContextMenuTrigger, ContextMenuContent, ContextMenuItem, ContextMenuCheckboxItem, ContextMenuRadioItem, ContextMenuLabel, ContextMenuSeparator, ContextMenuGroup, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger
+- Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription
+- Drawer, DrawerTrigger, DrawerContent, DrawerHeader, DrawerFooter, DrawerTitle, DrawerDescription
+- DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuRadioItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut
+- Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage, useFormField
+- HoverCard, HoverCardTrigger, HoverCardContent
+- Input
+- InputGroup, InputGroupAddon, InputGroupButton, InputGroupText, InputGroupInput, InputGroupTextarea
+- InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator
+- Label
+- NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger, NavigationMenuContent, NavigationMenuLink, NavigationMenuIndicator, NavigationMenuViewport
+- Pagination, PaginationContent, PaginationLink, PaginationItem, PaginationPrevious, PaginationNext, PaginationEllipsis
+- Popover, PopoverTrigger, PopoverContent, PopoverAnchor
+- Progress
+- RadioGroup, RadioGroupItem
+- ResizablePanelGroup, ResizablePanel, ResizableHandle
+- ScrollArea, ScrollBar
+- Select, SelectGroup, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectSeparator, SelectScrollUpButton, SelectScrollDownButton
+- Separator
+- Sheet, SheetPortal, SheetOverlay, SheetTrigger, SheetClose, SheetContent, SheetHeader, SheetFooter, SheetTitle, SheetDescription
+- SidebarProvider, Sidebar
+- Skeleton
+- Slider
+- Toaster
+- Spinner
+- Switch
+- Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell, TableCaption
+- Tabs, TabsList, TabsTrigger, TabsContent
+- Textarea
+- Toggle, toggleVariants
+- ToggleGroup, ToggleGroupItem
+- Tooltip, TooltipTrigger, TooltipContent, TooltipProvider
+
+## Dependencies
+- @radix-ui/react-accordion
+- @radix-ui/react-alert-dialog
+- @radix-ui/react-aspect-ratio
+- @radix-ui/react-avatar
+- @radix-ui/react-checkbox
+- @radix-ui/react-collapsible
+- @radix-ui/react-context-menu
+- @radix-ui/react-dialog
+- @radix-ui/react-dropdown-menu
+- @radix-ui/react-hover-card
+- @radix-ui/react-label
+- @radix-ui/react-slot
+- @streamdown/cjk
+- @streamdown/code
+- @streamdown/math
+- @streamdown/mermaid
+- @tanstack/react-query
+- @tanstack/react-router
+- ai
+- class-variance-authority
+- cmdk
+- embla-carousel-react
+- input-otp
+- lucide-react
+- motion/react
+- nanoid
+- react
+- react-day-picker
+- react-hook-form
+- recharts
+- streamdown
+- use-stick-to-bottom
+- vaul
+- @/lib/utils
+- @/hooks/use-session
+- @/integrations/supabase/client
+- @radix-ui/react-menubar
+- @radix-ui/react-navigation-menu
+- @radix-ui/react-popover
+- @radix-ui/react-progress
+- @radix-ui/react-radio-group
+- @radix-ui/react-scroll-area
+- @radix-ui/react-select
+- @radix-ui/react-separator
+- @radix-ui/react-switch
+- @radix-ui/react-tabs
+- @radix-ui/react-toggle
+- @radix-ui/react-toggle-group
+- @radix-ui/react-tooltip
+- react-resizable-panels
+- sonner
+- @/hooks/use-mobile
+- @/components/ui/button
+- @/components/ui/input
+- @/components/ui/separator
+- @/components/ui/sheet
+- @/components/ui/skeleton
+- @/components/ui/tooltip
+- @/components/ui/toggle
+
+## AI touchpoints [AI]
+- `src/components/ai-elements/prompt-input.tsx`
+- `src/components/ai-elements/conversation.tsx`
+- `src/components/ai-elements/message.tsx`
+- `src/components/ai-elements/shimmer.tsx`
+- `src/components/chat-cta.tsx`
+
+## Open questions
+- _none_
